@@ -1,0 +1,954 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>For Udeme ❤️</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com">
+  <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@600;700&family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+      user-select: none;
+    }
+
+    body {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      background: #121217;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 12px;
+    }
+
+    /* Realistic Phone Shell */
+    .mobile-frame {
+      width: 100%;
+      max-width: 400px;
+      height: 840px;
+      max-height: 94vh;
+      background: radial-gradient(circle at 10% 10%, #fff7f9, #fff0f3 50%, #ffe5eb 100%);
+      border-radius: 46px;
+      border: 11px solid #1f2127;
+      box-shadow: 0 25px 65px rgba(0,0,0,0.55), inset 0 0 4px rgba(255,255,255,0.4);
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* iPhone Dynamic Island / Notch */
+    .phone-top {
+      height: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 24px 0;
+      z-index: 50;
+    }
+
+    .status-clock {
+      font-size: 0.82rem;
+      font-weight: 800;
+      color: #1a1a24;
+    }
+
+    .island-notch {
+      width: 100px;
+      height: 24px;
+      background: #000;
+      border-radius: 999px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+    }
+
+    .island-dot {
+      width: 6px;
+      height: 6px;
+      background: #202028;
+      border-radius: 50%;
+    }
+
+    .status-icons {
+      font-size: 0.72rem;
+      font-weight: 700;
+      color: #1a1a24;
+      display: flex;
+      gap: 4px;
+    }
+
+    /* Sub-bar / Stage Pills */
+    .app-header {
+      padding: 8px 18px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      z-index: 40;
+    }
+
+    .stage-tag {
+      background: #e63946;
+      color: white;
+      font-size: 0.72rem;
+      font-weight: 800;
+      padding: 5px 12px;
+      border-radius: 999px;
+      letter-spacing: 0.5px;
+      box-shadow: 0 2px 8px rgba(230,57,70,0.3);
+    }
+
+    .sound-btn {
+      background: rgba(255,255,255,0.85);
+      backdrop-filter: blur(8px);
+      border: 1px solid rgba(255,182,193,0.6);
+      font-size: 0.74rem;
+      font-weight: 700;
+      color: #333;
+      padding: 5px 12px;
+      border-radius: 999px;
+      cursor: pointer;
+    }
+
+    /* Scrollable Stage Content */
+    .stage-viewport {
+      flex: 1;
+      overflow-y: auto;
+      padding: 14px 20px 24px;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .stage-viewport::-webkit-scrollbar {
+      display: none;
+    }
+
+    .stage-card {
+      display: none;
+      flex-direction: column;
+      animation: popIn 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+
+    .stage-card.active {
+      display: flex;
+    }
+
+    @keyframes popIn {
+      from { opacity: 0; transform: translateY(14px) scale(0.97); }
+      to { opacity: 1; transform: translateY(0) scale(1); }
+    }
+
+    .title {
+      font-size: 1.35rem;
+      font-weight: 800;
+      color: #1a1a24;
+      line-height: 1.25;
+      margin-bottom: 4px;
+    }
+
+    .subtitle {
+      font-size: 0.82rem;
+      color: #6c757d;
+      margin-bottom: 16px;
+      line-height: 1.4;
+    }
+
+    /* Progress bar */
+    .progress-track {
+      height: 6px;
+      background: #ffe0e6;
+      border-radius: 999px;
+      overflow: hidden;
+      margin-bottom: 18px;
+    }
+
+    .progress-fill {
+      height: 100%;
+      background: #e63946;
+      width: 0%;
+      border-radius: 999px;
+      transition: width 0.35s ease;
+    }
+
+    /* Options buttons */
+    .q-box {
+      background: white;
+      border-radius: 20px;
+      padding: 16px;
+      border: 1px solid #ffd4dc;
+      box-shadow: 0 6px 18px rgba(230,57,70,0.06);
+      margin-bottom: 12px;
+    }
+
+    .q-title {
+      font-size: 0.98rem;
+      font-weight: 700;
+      color: #1e1e24;
+      margin-bottom: 14px;
+      line-height: 1.35;
+    }
+
+    .options-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .opt-card {
+      background: #faf8f9;
+      border: 1.5px solid #f2e2e6;
+      border-radius: 14px;
+      padding: 12px 14px;
+      font-size: 0.86rem;
+      font-weight: 600;
+      color: #333;
+      text-align: left;
+      cursor: pointer;
+      transition: all 0.18s ease;
+    }
+
+    .opt-card:active {
+      transform: scale(0.98);
+      background: #fff0f3;
+      border-color: #e63946;
+    }
+
+    .reaction-badge {
+      display: none;
+      background: #fff0f3;
+      color: #e63946;
+      border: 1.5px dashed #ff8fa3;
+      border-radius: 12px;
+      padding: 10px 14px;
+      font-size: 0.82rem;
+      font-weight: 700;
+      margin-top: 10px;
+      line-height: 1.35;
+      animation: popIn 0.25s ease;
+    }
+
+    .reaction-badge.show {
+      display: block;
+    }
+
+    /* Stage 2 Polaroids with 3D Flip */
+    .polaroid-wrapper {
+      perspective: 1000px;
+      margin: 10px auto 16px;
+      width: 100%;
+      max-width: 310px;
+      height: 360px;
+    }
+
+    .polaroid-inner {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      text-align: center;
+      transition: transform 0.6s cubic-bezier(0.4, 0.2, 0.2, 1);
+      transform-style: preserve-3d;
+      cursor: pointer;
+    }
+
+    .polaroid-inner.flipped {
+      transform: rotateY(180deg);
+    }
+
+    .polaroid-front, .polaroid-back {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      backface-visibility: hidden;
+      border-radius: 18px;
+      background: white;
+      padding: 14px 14px 20px;
+      box-shadow: 0 12px 30px rgba(0,0,0,0.1);
+      border: 1px solid #f0e0e4;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .polaroid-back {
+      transform: rotateY(180deg);
+      background: #fffafd;
+      justify-content: center;
+      padding: 24px;
+      border: 2px dashed #ffb3c1;
+    }
+
+    .pin-tape {
+      width: 60px;
+      height: 18px;
+      background: rgba(255, 117, 143, 0.35);
+      border-radius: 4px;
+      margin: -22px auto 8px;
+      transform: rotate(-3deg);
+    }
+
+    .polaroid-hero-emoji {
+      height: 210px;
+      background: linear-gradient(135deg, #ffeef2, #ffd6e0);
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 4.8rem;
+    }
+
+    .polaroid-title {
+      font-family: 'Caveat', cursive;
+      font-size: 1.45rem;
+      font-weight: 700;
+      color: #1a1a24;
+      margin-top: 12px;
+      line-height: 1.1;
+    }
+
+    .polaroid-sub {
+      font-size: 0.74rem;
+      color: #888;
+      margin-top: 4px;
+    }
+
+    .back-note {
+      font-family: 'Caveat', cursive;
+      font-size: 1.35rem;
+      font-weight: 700;
+      color: #e63946;
+      line-height: 1.35;
+    }
+
+    .nav-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-top: 6px;
+    }
+
+    .nav-arrow {
+      background: white;
+      border: 1px solid #ffd4dc;
+      color: #e63946;
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      font-weight: 800;
+      font-size: 1.1rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .step-dots {
+      display: flex;
+      gap: 5px;
+    }
+
+    .step-dot {
+      width: 7px;
+      height: 7px;
+      background: #ffccd5;
+      border-radius: 50%;
+      transition: all 0.2s ease;
+    }
+
+    .step-dot.active {
+      width: 18px;
+      background: #e63946;
+      border-radius: 8px;
+    }
+
+    .primary-btn {
+      width: 100%;
+      background: #e63946;
+      color: white;
+      border: none;
+      border-radius: 16px;
+      padding: 13px;
+      font-size: 0.94rem;
+      font-weight: 700;
+      margin-top: 14px;
+      cursor: pointer;
+      box-shadow: 0 4px 14px rgba(230,57,70,0.3);
+    }
+
+    /* Stage 4: Runaway Zone */
+    .proposal-box {
+      text-align: center;
+      padding: 10px 0;
+    }
+
+    .ring-icon {
+      font-size: 3.6rem;
+      margin-bottom: 8px;
+      display: inline-block;
+      animation: bounceRing 2s infinite ease-in-out;
+    }
+
+    @keyframes bounceRing {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-7px); }
+    }
+
+    .runaway-container {
+      height: 140px;
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 16px;
+      margin-top: 18px;
+    }
+
+    .yes-button {
+      background: #2a9d8f;
+      color: white;
+      border: none;
+      padding: 14px 30px;
+      border-radius: 999px;
+      font-size: 1.05rem;
+      font-weight: 800;
+      cursor: pointer;
+      box-shadow: 0 6px 20px rgba(42,157,143,0.35);
+      transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+      z-index: 10;
+    }
+
+    .no-button {
+      background: #e9ecef;
+      color: #495057;
+      border: 1px solid #ced4da;
+      padding: 12px 22px;
+      border-radius: 999px;
+      font-size: 0.88rem;
+      font-weight: 700;
+      cursor: pointer;
+      position: relative;
+      z-index: 9;
+      transition: all 0.15s ease-out;
+      white-space: nowrap;
+    }
+
+    /* Stage 5: Envelope Reveal */
+    .celebrate-box {
+      text-align: center;
+      padding: 8px 0;
+    }
+
+    .cash-envelope {
+      background: linear-gradient(135deg, #1d3557, #3d5a80);
+      color: white;
+      border-radius: 20px;
+      padding: 22px 16px;
+      margin: 16px 0;
+      border: 2px dashed rgba(255,255,255,0.4);
+      box-shadow: 0 10px 24px rgba(29,53,87,0.25);
+      cursor: pointer;
+    }
+
+    .env-tag {
+      font-size: 0.68rem;
+      letter-spacing: 1.4px;
+      text-transform: uppercase;
+      font-weight: 800;
+      color: #98c1d9;
+    }
+
+    .env-sum {
+      font-size: 1.85rem;
+      font-weight: 900;
+      color: #52b788;
+      margin: 10px 0 4px;
+    }
+
+    .env-details {
+      display: none;
+      background: rgba(255,255,255,0.12);
+      border-radius: 12px;
+      padding: 12px;
+      margin-top: 10px;
+      font-size: 0.8rem;
+      line-height: 1.4;
+      animation: popIn 0.3s ease;
+    }
+
+    .opay-tag {
+      background: #2ec4b6;
+      color: white;
+      font-weight: 800;
+      padding: 3px 8px;
+      border-radius: 6px;
+      display: inline-block;
+      margin-top: 4px;
+    }
+
+    /* iPhone Home Bar */
+    .home-bar {
+      height: 22px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding-bottom: 6px;
+    }
+
+    .home-indicator {
+      width: 120px;
+      height: 4px;
+      background: #222;
+      border-radius: 999px;
+      opacity: 0.3;
+    }
+  </style>
+</head>
+<body>
+
+<div class="mobile-frame">
+  <!-- Status bar -->
+  <div class="phone-top">
+    <div class="status-clock" id="liveClock">21:42</div>
+    <div class="island-notch">
+      <div class="island-dot"></div>
+      <div class="island-dot" style="width: 10px; border-radius: 4px;"></div>
+    </div>
+    <div class="status-icons">● 4G 🔋</div>
+  </div>
+
+  <!-- Header -->
+  <div class="app-header">
+    <div class="stage-tag" id="stageTag">STAGE 1 / 5</div>
+    <button class="sound-btn" id="soundToggle">🔊 Sound On</button>
+  </div>
+
+  <!-- Viewport -->
+  <div class="stage-viewport">
+    
+    <!-- STAGE 1: REAL QUIZ & LOVE DEFINITION -->
+    <div class="stage-card active" id="stage1">
+      <h2 class="title">Official Leo Records 🦁</h2>
+      <p class="subtitle">Quick verification before we proceed, Favour Udeme...</p>
+      
+      <div class="progress-track">
+        <div class="progress-fill" id="quizBar"></div>
+      </div>
+
+      <div class="q-box">
+        <div class="q-title" id="quizQuestion">Question here...</div>
+        <div class="options-list" id="quizOptions"></div>
+        <div class="reaction-badge" id="quizReaction"></div>
+      </div>
+    </div>
+
+    <!-- STAGE 2: 5 REAL POLAROID MEMORIES -->
+    <div class="stage-card" id="stage2">
+      <h2 class="title">5 Moments with You 📸</h2>
+      <p class="subtitle">Tap the photo card to flip it and read the back!</p>
+
+      <div class="polaroid-wrapper">
+        <div class="polaroid-inner" id="polaroidCard" onclick="toggleFlip()">
+          <div class="polaroid-front">
+            <div class="pin-tape"></div>
+            <div class="polaroid-hero-emoji" id="polEmoji">🌙</div>
+            <div class="polaroid-title" id="polTitle">Memory Title</div>
+            <div class="polaroid-sub" id="polSub">Tap to read note ↺</div>
+          </div>
+          <div class="polaroid-back">
+            <div class="back-note" id="polNote">Secret note here...</div>
+            <div style="font-size: 0.72rem; color: #888; margin-top: 12px;">(Tap to flip back)</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="nav-row">
+        <button class="nav-arrow" onclick="prevPol()">‹</button>
+        <div class="step-dots" id="polDots">
+          <span class="step-dot active"></span>
+          <span class="step-dot"></span>
+          <span class="step-dot"></span>
+          <span class="step-dot"></span>
+          <span class="step-dot"></span>
+        </div>
+        <button class="nav-arrow" onclick="nextPol()">›</button>
+      </div>
+
+      <button class="primary-btn" onclick="goToStage(3)">Continue to Simulations 🚀</button>
+    </div>
+
+    <!-- STAGE 3: SITUATIONAL DILEMMAS -->
+    <div class="stage-card" id="stage3">
+      <h2 class="title">Field Simulations 🧪</h2>
+      <p class="subtitle">How are Bolaji & Udeme resolving these real-life scenarios?</p>
+
+      <div class="progress-track">
+        <div class="progress-fill" id="scenBar"></div>
+      </div>
+
+      <div class="q-box">
+        <div class="q-title" id="scenQuestion">Scenario here...</div>
+        <div class="options-list" id="scenOptions"></div>
+        <div class="reaction-badge" id="scenReaction"></div>
+      </div>
+    </div>
+
+    <!-- STAGE 4: THE BIG QUESTION -->
+    <div class="stage-card" id="stage4">
+      <div class="proposal-box">
+        <div class="ring-icon">💍</div>
+        <h2 class="title">Favour Udemeobong Idorenyin</h2>
+        <p class="subtitle" style="margin-top: 8px;">
+          From late-night calls when NEPA took light to sweet WhatsApp teasing. 
+          <br><br>
+          No feferity, no unnecessary public drama. 
+          <br><br>
+          <strong>Will you officially be my girlfriend[cite: 1]?</strong>
+        </p>
+
+        <div class="runaway-container" id="runawayZone">
+          <button class="yes-button" id="yesBtn" onclick="sayYes()">YES! ❤️</button>
+          <button class="no-button" id="noBtn" onmouseover="dodgeNo()" onclick="dodgeNo()">No ooo 😒</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- STAGE 5: CELEBRATION & CASH VOUCHER -->
+    <div class="stage-card" id="stage5">
+      <div class="celebrate-box">
+        <div style="font-size: 3rem;">🎉 💐 🎊</div>
+        <h2 class="title">She Said YES! 🥰</h2>
+        <p class="subtitle">
+          "Jesus Girlfriend" is officially taken[cite: 1]! No more whining[cite: 1]!
+        </p>
+
+        <div class="cash-envelope" onclick="openVoucher()">
+          <div class="env-tag">OFFICIAL CASH ROMANCE VOUCHER[cite: 1]</div>
+          <div style="font-size: 0.8rem; opacity: 0.85; margin-top: 2px;">"Flower is not edible, give me the money"[cite: 1]</div>
+          <div class="env-sum" id="voucherSum">₦ Tap to Unwrap 🎁</div>
+
+          <div class="env-details" id="voucherDetails">
+            <p><strong>Package:</strong> Pure Business Patronage & Headache Relief Fund[cite: 1] 💆‍♀️</p>
+            <p style="margin-top: 4px;">Destination: <span class="opay-tag">07078447882 (Opay)</span>[cite: 1]</p>
+            <p style="margin-top: 6px; font-size: 0.74rem; opacity: 0.85;">*Dinner at Thrills Restaurant (Strictly calm & chill vibes[cite: 1])*</p>
+          </div>
+        </div>
+
+        <p style="font-size: 0.78rem; color: #777; margin-top: 8px;">
+          Screenshot this screen right now and send it to Johnson on WhatsApp[cite: 1]! 📸
+        </p>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Bottom Home bar -->
+  <div class="home-bar">
+    <div class="home-indicator"></div>
+  </div>
+</div>
+
+<script>
+  // Clock
+  function updateClock() {
+    const d = new Date();
+    const h = String(d.getHours()).padStart(2, '0');
+    const m = String(d.getMinutes()).padStart(2, '0');
+    document.getElementById('liveClock').innerText = `${h}:${m}`;
+  }
+  setInterval(updateClock, 1000);
+  updateClock();
+
+  // Audio system
+  let soundOn = true;
+  const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+
+  function playTone(freq, type, dur) {
+    if (!soundOn || audioCtx.state === 'suspended') return;
+    try {
+      const osc = audioCtx.createOscillator();
+      const gain = audioCtx.createGain();
+      osc.type = type;
+      osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+      gain.gain.setValueAtTime(0.1, audioCtx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + dur);
+      osc.connect(gain);
+      gain.connect(audioCtx.destination);
+      osc.start();
+      osc.stop(audioCtx.currentTime + dur);
+    } catch(e) {}
+  }
+
+  function chime() {
+    playTone(523.25, 'triangle', 0.2);
+    setTimeout(() => playTone(659.25, 'triangle', 0.25), 90);
+  }
+
+  function whoosh() {
+    playTone(280, 'sine', 0.12);
+  }
+
+  function fanfare() {
+    [523.25, 659.25, 783.99, 1046.50].forEach((f, i) => {
+      setTimeout(() => playTone(f, 'triangle', 0.35), i * 110);
+    });
+  }
+
+  document.getElementById('soundToggle').onclick = () => {
+    if (audioCtx.state === 'suspended') audioCtx.resume();
+    soundOn = !soundOn;
+    document.getElementById('soundToggle').innerText = soundOn ? '🔊 Sound On' : '🔇 Muted';
+  };
+
+  // Stage 1 Quiz Data
+  const quizData = [
+    {
+      q: "Where did Johnson first message you from?",
+      opts: [
+        { t: "Instagram Explore page", r: "Lie! He saw your contact on the Leo club group[cite: 1]!" },
+        { t: "The Leo / Lions Club group", r: "Spot on! 'Jesus Girlfriend' caught his attention immediately[cite: 1] 😂" },
+        { t: "A random church group", r: "Incorrect, Leo club it was[cite: 1]!" }
+      ]
+    },
+    {
+      q: "When asked why you're single, what was your exact answer?",
+      opts: [
+        { t: "'I am married to Jesus, I'm the official wife'", r: "Exact words! 😌 And Johnson replied: 'dey dere, we plenty'[cite: 1]!" },
+        { t: "'I'm waiting for a cinematographer'", r: "Haha! You were busy with fashion school at Mapoly[cite: 1]!" },
+        { t: "'No comment'", r: "You definitely said married to Jesus[cite: 1]!" }
+      ]
+    },
+    {
+      q: "Your quickest emergency remedy for sudden headaches:",
+      opts: [
+        { t: "Sleep for 12 hours", r: "Sleep yes, but credit alert is faster[cite: 1]!" },
+        { t: "'Credit alert coz my head dey hot'", r: "Classic Favour! Paracetamol can never compete with alert[cite: 1] 💸" },
+        { t: "Swallow & Okra soup", r: "Okra is dinner, alert is medicine[cite: 1]!" }
+      ]
+    },
+    {
+      q: "Johnson ordered proposal flowers. What was your reaction?",
+      opts: [
+        { t: "Awwww so romantic!", r: "Lie! 'Shey mo le je flower ni[cite: 1]?!' 😂" },
+        { t: "'Give me the flower money... I no fit chop flower!'", r: "100% real! 'Na money be my romance now'[cite: 1]! 💐🚫" },
+        { t: "Frame them on the wall", r: "You said flower would just vex you[cite: 1]!" }
+      ]
+    },
+    {
+      q: "To you, Favour... What does genuine love actually mean?",
+      opts: [
+        { t: "Loud public drama and feferity", r: "Never! You hate unnecessary drama[cite: 1]!" },
+        { t: "Consistency, zero ghosting, peace of mind & patronizing your hustle", r: "Correct. True care, respect, and supporting your dreams[cite: 1] ❤️" },
+        { t: "Calling 20 times when light is off", r: "Johnson tried that one, but peace of mind comes first[cite: 1]!" }
+      ]
+    }
+  ];
+
+  let qIndex = 0;
+  function renderQuiz() {
+    const cur = quizData[qIndex];
+    document.getElementById('quizQuestion').innerText = cur.q;
+    document.getElementById('quizBar').style.width = ((qIndex / quizData.length) * 100) + '%';
+    const list = document.getElementById('quizOptions');
+    list.innerHTML = '';
+    const react = document.getElementById('quizReaction');
+    react.className = 'reaction-badge';
+
+    cur.opts.forEach(o => {
+      const b = document.createElement('div');
+      b.className = 'opt-card';
+      b.innerText = o.t;
+      b.onclick = () => {
+        chime();
+        react.innerText = o.r;
+        react.classList.add('show');
+        setTimeout(() => {
+          qIndex++;
+          if (qIndex < quizData.length) {
+            renderQuiz();
+          } else {
+            goToStage(2);
+          }
+        }, 1200);
+      };
+      list.appendChild(b);
+    });
+  }
+
+  // Stage 2 Polaroids
+  const polList = [
+    { emoji: "🌙", title: "Panseke / Oke-Lewo Night", note: "Our quick 30-minute late hangout after Lions meeting[cite: 1]. You rushed back home with bike before 9:30[cite: 1]!" },
+    { emoji: "🍲", title: "Okra Soup vs Bread Craving", note: "Eating eba & okra at 10 PM, but secretly craving hot tea and fresh bread in bed[cite: 1]!" },
+    { emoji: "⌚", title: "Smartwatch to Adigbe", note: "Dispatch delivering to Iyana Saraki junction[cite: 1], and checking your heart rate before my love burst it[cite: 1]." },
+    { emoji: "🧵", title: "The 32k Tailoring Hustle", note: "Working late to finish Lions native styles and gowns[cite: 1]. The needle kept breaking, but you delivered[cite: 1]!" },
+    { emoji: "🥺", title: "'Eni Lori Ko Ni Fila'", note: "All our midnight video calls in the dark when light went out[cite: 1], teasing me about my Yoruba[cite: 1]." }
+  ];
+
+  let pIndex = 0;
+  function renderPolaroid() {
+    const cur = polList[pIndex];
+    document.getElementById('polEmoji').innerText = cur.emoji;
+    document.getElementById('polTitle').innerText = cur.title;
+    document.getElementById('polNote').innerText = cur.note;
+    document.getElementById('polaroidCard').classList.remove('flipped');
+
+    const dots = document.querySelectorAll('#polDots .step-dot');
+    dots.forEach((d, i) => d.classList.toggle('active', i === pIndex));
+  }
+
+  function toggleFlip() {
+    chime();
+    document.getElementById('polaroidCard').classList.toggle('flipped');
+  }
+
+  function prevPol() {
+    pIndex = (pIndex - 1 + polList.length) % polList.length;
+    chime();
+    renderPolaroid();
+  }
+
+  function nextPol() {
+    pIndex = (pIndex + 1) % polList.length;
+    chime();
+    renderPolaroid();
+  }
+
+  // Stage 3 Scenarios
+  const scenData = [
+    {
+      q: "Situation 1: NEPA takes light in Abeokuta, your phone hits 5%, and Bolaji wants to video call[cite: 1].",
+      opts: [
+        { t: "Switch on flight mode & blame MTN data", r: "The trademark Favour move! 'Mtn don swallow am'[cite: 1] 😂" },
+        { t: "Quickly grab power bank and talk", r: "A rare miracle! Bolaji will rejoice[cite: 1]!" },
+        { t: "Drop the phone and sleep immediately", r: "Classic! 'Sleep dey my eye' wins again[cite: 1] 💤" }
+      ]
+    },
+    {
+      q: "Situation 2: Bolaji brings native fabric to sew with embroidery & aso-ofi cap[cite: 1].",
+      opts: [
+        { t: "'Gbogbo gbese e di 20k, add money for embroidery oko mi'", r: "Strictly business! Zero freebies in fashion[cite: 1]! 🧵" },
+        { t: "Sew it for free", r: "Lie! 'Babe no go collect customer package'[cite: 1]!" },
+        { t: "Tell him to find another tailor", r: "You'll sew it sharp, but the invoice must land[cite: 1]!" }
+      ]
+    },
+    {
+      q: "Situation 3: Heading to dinner at Thrills Restaurant[cite: 1]. Your golden rule?",
+      opts: [
+        { t: "Full public drama & loud noise", r: "God forbid! You hate public feferity[cite: 1]!" },
+        { t: "No drama, no feferity, chill vibes and eat peacefully", r: "Law of Favour: 'Chill and leave, or we stay in our houses'[cite: 1]! 🍽️" },
+        { t: "Bring DJ Chicken to the venue", r: "Haha! You will literally run away[cite: 1]!" }
+      ]
+    },
+    {
+      q: "Situation 4: It's Saturday night and you both have massive headaches[cite: 1]. The medicine?",
+      opts: [
+        { t: "Hot ewa aganyin with bread followed by alert", r: "Udeme approved combo! Instant cure[cite: 1]! 🍞💸" },
+        { t: "Herbal medicine from grandpa", r: "Which Babalawo grandpa? No ooo[cite: 1]!" },
+        { t: "Watching TikTok till 2 AM", r: "Guilty as charged[cite: 1]!" }
+      ]
+    },
+    {
+      q: "Situation 5: Someone asks: 'Who is that fine cinematographer talking to you?'[cite: 1]",
+      opts: [
+        { t: "'Just one guy from Leo club'", r: "Stop disguising, you know he's your pair[cite: 1]!" },
+        { t: "'That is my official man, Bolaji Johnson'", r: "The only approved answer moving forward[cite: 1]! ❤️" },
+        { t: "'I'm still waiting for my 5 million'", r: "Opay cannot take pass 8m anyway[cite: 1]! 😂" }
+      ]
+    }
+  ];
+
+  let sIndex = 0;
+  function renderScenarios() {
+    const cur = scenData[sIndex];
+    document.getElementById('scenQuestion').innerText = cur.q;
+    document.getElementById('scenBar').style.width = ((sIndex / scenData.length) * 100) + '%';
+    const list = document.getElementById('scenOptions');
+    list.innerHTML = '';
+    const react = document.getElementById('scenReaction');
+    react.className = 'reaction-badge';
+
+    cur.opts.forEach(o => {
+      const b = document.createElement('div');
+      b.className = 'opt-card';
+      b.innerText = o.t;
+      b.onclick = () => {
+        chime();
+        react.innerText = o.r;
+        react.classList.add('show');
+        setTimeout(() => {
+          sIndex++;
+          if (sIndex < scenData.length) {
+            renderScenarios();
+          } else {
+            goToStage(4);
+          }
+        }, 1200);
+      };
+      list.appendChild(b);
+    });
+  }
+
+  // Stage 4: Runaway No button
+  const noBtn = document.getElementById('noBtn');
+  const yesBtn = document.getElementById('yesBtn');
+  const runawayLines = [
+    "No ooo 😒",
+    "Button under maintenance! 🛠️",
+    "Physics won't let you! ⚡",
+    "Wrong choice, Udeme! ✋",
+    "E no fit click! 😂",
+    "Try YES joor! ❤️"
+  ];
+  let dodges = 0;
+  let scale = 1;
+
+  function dodgeNo() {
+    whoosh();
+    dodges++;
+    const x = (Math.random() - 0.5) * 180;
+    const y = (Math.random() - 0.5) * 110;
+    noBtn.style.transform = `translate(${x}px, ${y}px)`;
+    noBtn.innerText = runawayLines[dodges % runawayLines.length];
+
+    scale += 0.12;
+    yesBtn.style.transform = `scale(${scale})`;
+  }
+
+  function sayYes() {
+    fanfare();
+    confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } });
+    setTimeout(() => {
+      confetti({ particleCount: 60, angle: 60, spread: 55, origin: { x: 0 } });
+      confetti({ particleCount: 60, angle: 120, spread: 55, origin: { x: 1 } });
+    }, 250);
+    goToStage(5);
+  }
+
+  function openVoucher() {
+    chime();
+    document.getElementById('voucherSum').innerText = "₦ UNLOCKED IN FULL 💳";
+    document.getElementById('voucherDetails').style.display = 'block';
+  }
+
+  // Stage Navigation
+  function goToStage(num) {
+    document.querySelectorAll('.stage-card').forEach(c => c.classList.remove('active'));
+    document.getElementById('stage' + num).classList.add('active');
+    document.getElementById('stageTag').innerText = `STAGE ${num} / 5`;
+    document.querySelector('.stage-viewport').scrollTop = 0;
+
+    if (num === 1) renderQuiz();
+    if (num === 2) renderPolaroid();
+    if (num === 3) renderScenarios();
+  }
+
+  // Initialize
+  renderQuiz();
+  renderPolaroid();
+</script>
+</body>
+</html>
